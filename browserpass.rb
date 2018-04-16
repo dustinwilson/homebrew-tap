@@ -6,8 +6,8 @@ class Browserpass < Formula
   sha256 "cd7ccd0b305427464f8d84483f096a59ad69895b352776d8b0dfc2395ac82999"
 
   depends_on "go" => :build
-  depends_on "gnupg" => :run
-  depends_on "pinentry-mac" => :run
+  depends_on "gnupg"
+  depends_on "pinentry-mac"
 
   def install
     ENV["GOPATH"] = buildpath
