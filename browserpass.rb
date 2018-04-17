@@ -1,6 +1,6 @@
 class Browserpass < Formula
   desc "Native component for Chrome & Firefox password management add-on"
-  homepage "https://github.com/dannyvankooten/browserpass"
+  homepage "https://github.com/browserpass/browserpass"
   url "https://github.com/browserpass/browserpass/archive/2.0.20.tar.gz"
   version "2.0.20"
   sha256 "0ee1c7c27596adc64cc0d3a0954246e31eeab83e85c0674afb3d052be1c3a73e"
@@ -13,6 +13,8 @@ class Browserpass < Formula
     ENV["GOPATH"] = buildpath
     (buildpath/"src/github.com/dannyvankooten/browserpass").install buildpath.children
     cd "src/github.com/dannyvankooten/browserpass" do
+      # Install go dependencies
+      system "go get github.com/gokyle/twofactor github.com/mattn/go-zglob github.com/sahilm/fuzzy"
       system "make", "browserpass-darwinx64"
       mkdir "out"
       mkdir "out/bin"
