@@ -1,9 +1,9 @@
 class Browserpass < Formula
   desc "Native component for Chrome & Firefox password management add-on"
   homepage "https://github.com/browserpass/browserpass"
-  url "https://github.com/browserpass/browserpass/archive/2.0.20.tar.gz"
-  version "2.0.20"
-  sha256 "0ee1c7c27596adc64cc0d3a0954246e31eeab83e85c0674afb3d052be1c3a73e"
+  url "https://github.com/browserpass/browserpass/archive/2.0.21.tar.gz"
+  version "2.0.21"
+  sha256 "df318a98187e718a49d9d579c0184e39d41a8b8e6f53ddb9a7d8efab8ee2fcac"
 
   depends_on "go" => :build
   depends_on "gnupg"
