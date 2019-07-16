@@ -1,44 +1,86 @@
 class Browserpass < Formula
+  version "3.0.6"
   desc "Native component for Chrome & Firefox password management add-on"
-  homepage "https://github.com/browserpass/browserpass"
-  url "https://github.com/browserpass/browserpass/archive/2.0.22.tar.gz"
-  version "2.0.22"
-  sha256 "ce4d8f17b25982af67e5090a79d3cffeb6fddc36f579e87851a90b3e9515ae45"
+  homepage "https://github.com/browserpass/browserpass-native"
+  url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
+  sha256 "422bc6dd1270a877af6ac7801a75b4c4b57171d675c071470f31bc24196701e3"
 
-  depends_on "go" => :build
+  depends_on "coreutils" => :build
+  depends_on "gpg"
   depends_on "gnupg"
+  depends_on "gnu-sed" => :build
+  depends_on "pinentry"
   depends_on "pinentry-mac"
 
   def install
-    ENV["GOPATH"] = buildpath
-    (buildpath/"src/github.com/dannyvankooten/browserpass").install buildpath.children
-    cd "src/github.com/dannyvankooten/browserpass" do
-      # Install go dependencies
-      system "go get github.com/gokyle/twofactor github.com/mattn/go-zglob github.com/sahilm/fuzzy"
-      system "make", "browserpass-darwinx64"
-      mkdir "out"
-      mkdir "out/bin"
-      mkdir "out/share"
-      cp "browserpass-darwinx64", "out/bin/browserpass"
-      cp "install.sh", "out/bin/browserpass-setup"
-      cp "firefox/host.json", "out/share/firefox-host.json"
-      cp "chrome/host.json", "out/share/chrome-host.json"
-      cp "chrome/policy.json", "out/share/chrome-policy.json"
-      dir = csh_quote(HOMEBREW_PREFIX)
-      inreplace "out/bin/browserpass-setup", /^(BIN_DIR=).*$/, "\\1\"#{dir}/bin\""
-      inreplace "out/bin/browserpass-setup", /^(JSON_DIR=).*$/, "\\1\"#{dir}/share/browserpass\""
-      bin.install Dir["out/bin/*"]
-      pkgshare.install Dir["out/share/*"]
-    end
+    ENV["DESTDIR"] = ""
+    ENV["PREFIX"] = prefix.to_s
+    ENV["BIN"] = "browserpass-darwin64"
+
+    system "make", "configure"
+    system "make", "install"
+
+    data= <<-EOS
+#!/usr/bin/env bash
+BROWSER="$1"
+
+if [ -z "$BROWSER" ]; then
+    echo ""
+    echo "Select your browser:"
+    echo "===================="
+    echo "1) Brave"
+    echo "2) Chrome"
+    echo "3) Chromium"
+    echo "4) Firefox"
+    echo "5) Vivaldi"
+    echo -n "1-5: "
+    read BROWSER
+    echo ""
+fi
+
+# Set target dir from user input
+case $BROWSER in
+1|[Bb]rave)
+    BROWSER_NAME="brave"
+;;
+2|[Cc]hrome)
+    BROWSER_NAME="chrome"
+;;
+3|[Cc]hromium)
+    BROWSER_NAME="chromium"
+;;
+4|[Ff]irefox)
+    BROWSER_NAME="firefox"
+;;
+5|[Vv]ivaldi)
+    BROWSER_NAME="vivaldi"
+;;
+*)
+    echo "Invalid selection. Please select 1-5 or one of the browser names."
+    exit 1
+;;
+esac
+
+PREFIX='/usr/local/opt/browserpass' make hosts-${BROWSER_NAME}-user -f /usr/local/opt/browserpass/lib/browserpass/Makefile
+    EOS
+
+    File.open("#{bin}/browserpass-setup", File::WRONLY|File::CREAT) { |f|
+      f.write(data)
+    }
+
+    system "chmod", "555", "#{bin}/browserpass-setup"
   end
 
   def caveats; <<~EOS
     To complete installation of browserpass, do the following:
 
-    1. Install the browserpass-ce add-on in your browser.
-        * Chrome: https://chrome.google.com/webstore/detail/browserpass-ce/naepdomgkenhinolocfifgehidddafch
+    1. Install the browserpass extension in your browser.
+        * Chrome & Chromium flavors: https://chrome.google.com/webstore/detail/browserpass/naepdomgkenhinolocfifgehidddafch
         * Firefox: https://addons.mozilla.org/en-US/firefox/addon/browserpass-ce/
-    2. Run `browserpass-setup` to install browser-specific manifest files.
+    2. Optionally install the browserpass-otp extension in your browser for OTP support.
+        * Chrome & Chromium flavors: https://chrome.google.com/webstore/detail/browserpass-otp/afjjoildnccgmjbblnklbohcbjehjaph
+        * Firefox: https://addons.mozilla.org/en-US/firefox/addon/browserpass-otp/
+    3. Run `browserpass-setup` to install browser-specific manifest files.
 
     The addon will not work otherwise.
     EOS
