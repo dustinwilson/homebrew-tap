@@ -1,17 +1,12 @@
 class Docopts < Formula
-  version "0.6.1+fix"
+  version "0.6.4-with-no-mangle-double-dash"
   desc "Command-line interface description language - for shell"
   homepage "https://github.com/docopt/docopts"
-  url "https://github.com/docopt/docopts/archive/refs/tags/v0.6.1+fix.tar.gz"
-  sha256 "535cb8abca7328a1e6ff7ada418f84a7baf668faf5a75fed3daccc69c646541f"
+  url "https://github.com/docopt/docopts/releases/download/v#{version}/docopts_darwin_amd64"
+  sha256 "4d8a9a527e01b9546c99e1666422c377d55da4a1a98d53e48964cf4efd4532a9"
   license "MIT"
 
-  depends_on "bash"
-  depends_on "python"
-
   def install
-    inreplace "docopts", "#!/usr/bin/env python", "#!/usr/bin/env python3"
-    system "pip3", "install", "docopt"
-    bin.install "docopts"
+    bin.install "docopts_darwin_amd64" => "docopts"
   end
 end

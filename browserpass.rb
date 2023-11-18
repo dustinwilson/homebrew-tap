@@ -1,9 +1,15 @@
 class Browserpass < Formula
-  version "3.0.7"
+  version "3.1.0"
   desc "Native component for Chrome & Firefox password management add-on"
   homepage "https://github.com/browserpass/browserpass-native"
-  url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
-  sha256 "97b9a9068a3c88fb1d52d42a1712e199da5865a4c6f8352b9fe3eae1ee86c746"
+
+  if Hardware::CPU.intel?
+    url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
+    sha256 "a27c2a174511fbc32b1bc2571398f3371a86606f62c717223559b2268d75ce51"
+  elsif Hardware::CPU.arm?
+    url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin-arm64-#{version}.tar.gz"
+    sha256 "3f5b32ce32c9661034825d9bdd23dc183041563a7fa29aa72b0628fb87c20c42"
+  end
 
   depends_on "coreutils" => :build
   depends_on "gpg"
@@ -15,7 +21,13 @@ class Browserpass < Formula
   def install
     ENV["DESTDIR"] = ""
     ENV["PREFIX"] = prefix.to_s
-    inreplace "Makefile", "BIN = browserpass", "BIN = browserpass-darwin64"
+    #inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin64"
+
+    if Hardware::CPU.intel?
+      inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin64"
+    elsif Hardware::CPU.arm?
+      inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin-arm64"
+    end
 
     system "make", "configure"
     system "make", "install"
@@ -61,7 +73,7 @@ case $BROWSER in
 ;;
 esac
 
-PREFIX='/usr/local/opt/browserpass' make hosts-${BROWSER_NAME}-user -f /usr/local/opt/browserpass/lib/browserpass/Makefile
+PREFIX='#{HOMEBREW_PREFIX}/opt/browserpass' make hosts-${BROWSER_NAME}-user -f #{HOMEBREW_PREFIX}/opt/browserpass/lib/browserpass/Makefile
     EOS
 
     File.open("#{bin}/browserpass-setup", File::WRONLY|File::CREAT) { |f|
