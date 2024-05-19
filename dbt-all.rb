@@ -51,6 +51,6 @@ class DbtAll < Formula
     end
 
     test do
-        assert_match "dbt", shell_output("#{bin}/dbt --version | awk '/installed:/ {print $3}'")
+        assert_match DbtAll.class_variable_get(:@@version), shell_output("#{bin}/dbt --version | awk '/installed:/ {print $3}'")
     end
 end
