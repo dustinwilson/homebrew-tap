@@ -21,7 +21,6 @@ class Browserpass < Formula
   def install
     ENV["DESTDIR"] = ""
     ENV["PREFIX"] = prefix.to_s
-    #inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin64"
 
     if Hardware::CPU.intel?
       inreplace "Makefile", "BIN ?= browserpass", "BIN ?= browserpass-darwin64"
