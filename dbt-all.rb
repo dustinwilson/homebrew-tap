@@ -11,11 +11,11 @@ class DbtAll < Formula
 
     @@version = version
     resource "adapters" do
-        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtCoreBundles.class_variable_get(:@@version)}/bundle_core_all_adapters_mac_3.11.zip"
+        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtAll.class_variable_get(:@@version)}/bundle_core_all_adapters_mac_3.11.zip"
         sha256 "66631b63871fc47759c93bcda61978c02d228a83f540ba5736eda0acd7c876d0"
     end
     resource "requirements" do
-        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtCoreBundles.class_variable_get(:@@version)}/bundle_requirements_mac_3.11.txt"
+        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtAll.class_variable_get(:@@version)}/bundle_requirements_mac_3.11.txt"
         sha256 "8c5d08d0bcad7bf687eae13c434e496255bd98dd3e5917ac61e9c2ea329852f5"
     end
 
