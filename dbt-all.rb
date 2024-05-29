@@ -2,21 +2,21 @@ class DbtAll < Formula
     include Language::Python::Virtualenv
 
     desc "Installs dbt core and all adapters"
-    version "1.8.0"
+    version "1.8.1"
     homepage "https://github.com/dbt-labs/dbt-core-bundles"
     url "https://github.com/dbt-labs/dbt-core-bundles/archive/refs/tags/#{version}.tar.gz"
-    sha256 "8183a9a9df032247ea8c39bca689a0dce1a434f61003b35aec82ae89d9fb034a"
+    sha256 "2a646e567c38c4c7e5d42edd589bac4138abef5450c70c741890665e764515b5"
 
     depends_on "python@3.11"
 
     @@version = version
     resource "adapters" do
         url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtAll.class_variable_get(:@@version)}/bundle_core_all_adapters_mac_3.11.zip"
-        sha256 "66631b63871fc47759c93bcda61978c02d228a83f540ba5736eda0acd7c876d0"
+        sha256 "362d931405c58dd6f4b40c0ee71ec1f2aa6116d561c44eda655f30719f6f6fc8"
     end
     resource "requirements" do
         url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtAll.class_variable_get(:@@version)}/bundle_requirements_mac_3.11.txt"
-        sha256 "8c5d08d0bcad7bf687eae13c434e496255bd98dd3e5917ac61e9c2ea329852f5"
+        sha256 "cd7afbb99ed58ea5c1e93b8594f38d94ccc538cabc123dd0e7559f5fc6fbccd6"
     end
 
     def install
