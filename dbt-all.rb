@@ -4,18 +4,17 @@ class DbtAll < Formula
     desc "Installs dbt core and all adapters"
     version "1.8.3"
     homepage "https://github.com/dbt-labs/dbt-core-bundles"
-    url "https://github.com/dbt-labs/dbt-core-bundles/archive/refs/tags/#{version}.tar.gz"
+    url "https://github.com/dbt-labs/dbt-core-bundles/archive/refs/tags/1.8.3.tar.gz"
     sha256 "611727813ff4ff7525c021ab33b209d4724d344a4bb72738bcebd69888aad961"
 
     depends_on "python@3.11"
 
-    @@version = version
     resource "adapters" do
-        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtAll.class_variable_get(:@@version)}/bundle_core_all_adapters_mac_3.11.zip"
+        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/1.8.3/bundle_core_all_adapters_mac_3.11.zip"
         sha256 "d82fec6a1e8522f5470f628ce462a3f059f7544de94cfad8d677d7a51074bf95"
     end
     resource "requirements" do
-        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/#{DbtAll.class_variable_get(:@@version)}/bundle_requirements_mac_3.11.txt"
+        url "https://github.com/dbt-labs/dbt-core-bundles/releases/download/1.8.3/bundle_requirements_mac_3.11.txt"
         sha256 "04ddd9c2ae2f6365be5dccd5d5a0a5c022195e9cfdc074d016a5032124699dc1"
     end
 
@@ -51,6 +50,6 @@ class DbtAll < Formula
     end
 
     test do
-        assert_match DbtAll.class_variable_get(:@@version), shell_output("#{bin}/dbt --version | awk '/installed:/ {print $3}'")
+        assert_match "1.8.1", shell_output("#{bin}/dbt --version | awk '/installed:/ {print $3}'")
     end
 end
