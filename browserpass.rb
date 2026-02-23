@@ -1,14 +1,14 @@
 class Browserpass < Formula
-  version "3.1.0"
+  version "3.1.2"
   desc "Native component for Chrome & Firefox password management add-on"
   homepage "https://github.com/browserpass/browserpass-native"
 
   if Hardware::CPU.intel?
-    url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin64-#{version}.tar.gz"
-    sha256 "a27c2a174511fbc32b1bc2571398f3371a86606f62c717223559b2268d75ce51"
+    url "https://github.com/browserpass/browserpass-native/releases/download/v#{version}/browserpass-darwin64-#{version}.tar.gz"
+    sha256 "44661ccf927f89059003f54544e2e86a98a00bdd3aedd2fb8c7edbb6167ab7fb"
   elsif Hardware::CPU.arm?
-    url "https://github.com/browserpass/browserpass-native/releases/download/#{version}/browserpass-darwin-arm64-#{version}.tar.gz"
-    sha256 "3f5b32ce32c9661034825d9bdd23dc183041563a7fa29aa72b0628fb87c20c42"
+    url "https://github.com/browserpass/browserpass-native/releases/download/v#{version}/browserpass-darwin-arm64-#{version}.tar.gz"
+    sha256 "e191d5dd97f6b58b0e8016ec226979d84eb86f3d73e8ef08f7376596f8852060"
   end
 
   depends_on "coreutils" => :build
