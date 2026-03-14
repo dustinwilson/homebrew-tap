@@ -9,7 +9,7 @@ class Cdparanoia < Formula
   depends_on "automake" => :build
 
   patch do
-    url "https://raw.githubusercontent.com/dustinwilson/homebrew-tap/patches/cdparanoia/cdparanoia.patch"
+    url "https://raw.githubusercontent.com/dustinwilson/homebrew-tap/master/patches/cdparanoia/cdparanoia.patch"
     sha256 "7d99da9b5e1eeb202caabbf2268427f5fdff57095b063327a529bbbd6d5eff96"
   end
 
