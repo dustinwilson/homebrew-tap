@@ -15,9 +15,13 @@ class Rsgain < Formula
   depends_on "fmt"
 
   def install
-     system "cmake", "-S", ".", "-B", "build", *std_cmake_args
-     cd "build"
-     system "make", "install"
+    sdk = MacOS.sdk_path
+
+    system "cmake", "-S", ".", "-B", "build",
+                    "-DCMAKE_CXX_FLAGS=-stdlib=libc++ -isystem #{sdk}/usr/include/c++/v1",
+                    *std_cmake_args
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
   end
 
   test do
