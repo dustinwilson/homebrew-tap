@@ -315,10 +315,10 @@ index e8a90cd..375a36a 100644
    
 diff --git cdparanoia-III-10.2/interface/osx_interface.c cdparanoia-III-10.2/interface/osx_interface.c
 new file mode 100644
-index 0000000..f672316
+index 0000000..936a743
 --- /dev/null
 +++ cdparanoia-III-10.2/interface/osx_interface.c
-@@ -0,0 +1,249 @@
+@@ -0,0 +1,259 @@
 +/******************************************************************
 + * CopyPolicy: GNU Public License 2 applies
 + * Copyright (C) 1998 Monty xiphmont@mit.edu
@@ -431,7 +431,7 @@ index 0000000..f672316
 +  char *devname;
 +  CFRange range;
 +  CFIndex buf_len;
-+  int leadout;
++  int leadout = -1;  /* FIX: initialize to -1 so we can detect missing leadout */
 +  CFMutableDictionaryRef properties;
 +  CFDataRef data;
 +  int i;
@@ -461,10 +461,11 @@ index 0000000..f672316
 +    return -1;
 +  }
 +
-+  buf_len = CFDataGetLength(data) + 1;
++  /* FIX: use the exact data length for the range; allocate one extra byte for safety */
++  buf_len = CFDataGetLength(data);
 +  range = CFRangeMake(0, buf_len);
 +
-+  d->raw_toc = (CDTOC *)malloc(buf_len);
++  d->raw_toc = (CDTOC *)malloc(buf_len + 1);
 +  if (d->raw_toc == NULL) {
 +    cderror(d,  "099: toc malloc fail\n");
 +    CFRelease(properties);
@@ -502,9 +503,17 @@ index 0000000..f672316
 +    d->disc_toc[d->tracks].dwStartSector = start_sector;
 +    d->tracks++;
 +  }
++
++  /* FIX: guard against missing leadout descriptor */
++  if (leadout < 0) {
++    cderror(d, "099: no leadout found in TOC\n");
++    return -1;
++  }
++
 +  d->disc_toc[d->tracks].bTrack = 0xaa;
 +  d->disc_toc[d->tracks].bFlags =
-+    (d->raw_toc->descriptors[i].adr << 4) | d->raw_toc->descriptors[leadout].control;
++    /* FIX: was descriptors[i] (one past end of array); use descriptors[leadout] */
++    (d->raw_toc->descriptors[leadout].adr << 4) | d->raw_toc->descriptors[leadout].control;
 +  d->disc_toc[d->tracks].dwStartSector = CDConvertMSFToLBA(d->raw_toc->descriptors[leadout].p);
 +
 +  return d->tracks;
@@ -568,6 +577,7 @@ index 0000000..f672316
 +}
 +
 +#endif /* __APPLE__ */
++
 diff --git cdparanoia-III-10.2/interface/osx_interface.h cdparanoia-III-10.2/interface/osx_interface.h
 new file mode 100644
 index 0000000..4815bab
